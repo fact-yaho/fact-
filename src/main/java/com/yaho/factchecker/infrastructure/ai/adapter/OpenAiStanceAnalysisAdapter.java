@@ -39,6 +39,10 @@ public class OpenAiStanceAnalysisAdapter implements StanceAnalysisPort {
                     .call()
                     .content();
 
+            if (content == null || content.isBlank()) {
+                throw new IllegalStateException("AI stance 분석 응답이 비어 있습니다.");
+            }
+
             return objectMapper.readValue(content, StanceAnalysisResponse.class);
         } catch (JsonProcessingException e) {
             throw new IllegalStateException("AI stance 분석 요청/응답을 처리할 수 없습니다.", e);

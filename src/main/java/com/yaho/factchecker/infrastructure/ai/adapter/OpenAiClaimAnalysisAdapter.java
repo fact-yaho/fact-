@@ -36,6 +36,10 @@ public class OpenAiClaimAnalysisAdapter implements ClaimAnalysisPort {
                 .call()
                 .content();
 
+        if (content == null || content.isBlank()) {
+            throw new IllegalStateException("AI claim 분석 응답이 비어 있습니다.");
+        }
+
         try {
             return objectMapper.readValue(content, ClaimAnalysisResponse.class);
         } catch (JsonProcessingException e) {
