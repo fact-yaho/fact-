@@ -17,7 +17,7 @@ import org.hibernate.annotations.UuidGenerator;
 
 @Getter
 @Entity
-@Table(name = "p_evidence_document")
+@Table(name = "evidence_document")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class EvidenceDocument {
 

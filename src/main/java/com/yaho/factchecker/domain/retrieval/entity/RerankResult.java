@@ -16,7 +16,7 @@ import org.hibernate.annotations.UuidGenerator;
 
 @Getter
 @Entity
-@Table(name = "p_rerank_result")
+@Table(name = "rerank_result")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class RerankResult {
 

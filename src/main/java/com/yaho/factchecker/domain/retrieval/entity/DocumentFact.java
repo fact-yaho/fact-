@@ -19,7 +19,7 @@ import org.hibernate.type.SqlTypes;
 
 @Getter
 @Entity
-@Table(name = "p_document_fact")
+@Table(name = "document_fact")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class DocumentFact {
 
