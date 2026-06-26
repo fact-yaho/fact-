@@ -50,10 +50,12 @@ public class RerankResult {
 
     @Builder
     public RerankResult(UUID claimId, EvidenceDocument evidenceDocument, Integer bm25Rank,
-                        Integer vectorSimRank, Double vectorSimScore, Integer finalRank) {
+                        Double bm25Score, Integer vectorSimRank, Double vectorSimScore,
+                        Integer finalRank) {
         this.claimId = claimId;
         this.evidenceDocument = evidenceDocument;
         this.bm25Rank = bm25Rank;
+        this.bm25Score = bm25Score;
         this.vectorSimRank = vectorSimRank;
         this.vectorSimScore = vectorSimScore;
         this.finalRank = finalRank;
