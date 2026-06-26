@@ -36,6 +36,9 @@ public class RerankResult {
     @Column(name = "bm25_rank", nullable = false)
     private Integer bm25Rank;
 
+    @Column(name = "bm25_score", nullable = false)
+    private Double bm25Score;
+
     @Column(name = "vector_sim_rank", nullable = false)
     private Integer vectorSimRank;
 

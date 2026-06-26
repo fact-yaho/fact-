@@ -44,6 +44,10 @@ dependencies {
     runtimeOnly 'org.postgresql:postgresql'
     // pgvector
     implementation 'com.pgvector:pgvector:0.1.6'
+    // Lucene (BM25 + 한국어 형태소 분석 Nori) -> 하단core, nori, parser의 버전을 모두 일치시켜야 함
+    implementation 'org.apache.lucene:lucene-core:9.11.1'
+    implementation 'org.apache.lucene:lucene-analysis-nori:9.11.1'
+    implementation 'org.apache.lucene:lucene-queryparser:9.11.1'
 }
 
 dependencyManagement {
