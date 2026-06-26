@@ -22,8 +22,8 @@ public interface DocumentFactRepository extends JpaRepository<DocumentFact, UUID
      * - MAX 집계: GROUP BY + MAX (결정 2-A)
      * - fact → evidence_document → (claim_id 필터)
      *
-     * @param claimId     대상 소주장 id (이 소주장이 수집한 문서들로 범위 한정)
-     * @param queryVector pgvector 리터럴 문자열 "[v1,v2,...]"
+     * claimId = 대상 소주장 id (이 소주장이 수집한 문서들로 범위 한정)
+     * queryVector = pgvector 리터럴 문자열 "[v1,v2,...]"
      */
     @Query(value = """
             SELECT
