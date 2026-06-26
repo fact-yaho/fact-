@@ -120,7 +120,7 @@ public class RetrievalService {
         return ""; // 현재 구현이 안되어 ""로 반환
     }
 
-    // [5~7단계]
+    // [5단계]
     private List<RerankRow> rerank(UUID claimId, String claimText, String queryVector) {
         // [5-1단계] 후보 근거문서 조회 (한 소주장이 수집한 문서들)
         List<EvidenceDocument> candidates = evidenceDocumentRepository.findAllByClaimId(claimId);
