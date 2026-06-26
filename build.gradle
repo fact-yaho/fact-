@@ -40,11 +40,10 @@ dependencies {
     testCompileOnly 'org.projectlombok:lombok'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
     testAnnotationProcessor 'org.projectlombok:lombok'
-
-
     // PostgreSQL 드라이버
     runtimeOnly 'org.postgresql:postgresql'
-
+    // pgvector
+    implementation 'com.pgvector:pgvector:0.1.6'
 }
 
 dependencyManagement {
