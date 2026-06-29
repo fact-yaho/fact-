@@ -28,7 +28,7 @@ public class UserController {
     // 2. 회원탈퇴 API (Delete)
     @DeleteMapping
     public ResponseEntity<String> deleteUser(@RequestParam(name = "userId") Long userId) {
-        // 실제 일은 서비스 인스턴스(userServcie)에게 시킵니다.
+
         userServcie.deleteUser(userId);
         return ResponseEntity.ok("회원탈퇴 완료. 유저 ID: " + userId);
     }
