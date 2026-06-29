@@ -1,4 +1,4 @@
-package com.yaho.factchecker.domain.ai.type;
+package com.yaho.factchecker.global.type;
 
 public enum ClaimCategory {
     BILATERAL_RELATIONS("양자관계"),

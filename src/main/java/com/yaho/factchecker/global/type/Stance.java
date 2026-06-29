@@ -1,4 +1,4 @@
-package com.yaho.factchecker.domain.ai.type;
+package com.yaho.factchecker.global.type;
 
 public enum Stance {
     SUPPORTS,

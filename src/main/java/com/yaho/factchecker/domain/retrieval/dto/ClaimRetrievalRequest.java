@@ -1,6 +1,6 @@
 package com.yaho.factchecker.domain.retrieval.dto;
 
-import com.yaho.factchecker.domain.ai.type.ClaimCategory;
+import com.yaho.factchecker.global.type.ClaimCategory;
 import java.util.List;
 import java.util.UUID;
 
