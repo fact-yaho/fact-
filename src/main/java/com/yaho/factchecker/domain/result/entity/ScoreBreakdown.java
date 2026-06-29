@@ -36,7 +36,6 @@ import org.hibernate.annotations.UuidGenerator;
         updated_at = CURRENT_TIMESTAMP
     WHERE id = ?
 """)
-@SQLRestriction("deleted_at IS NULL")
 public class ScoreBreakdown {
 
     @Id

@@ -34,7 +34,6 @@ import org.hibernate.annotations.UuidGenerator;
     SET deleted_at = CURRENT_TIMESTAMP, updated_at = CURRENT_TIMESTAMP
     WHERE id = ?
 """)
-@SQLRestriction("deleted_at IS NULL")
 public class AnalysisEvidence {
 
     @Id
