@@ -13,11 +13,10 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 @Transactional
 
-public class MemberServcie {
+public class UserServcie {
 
     private final UserRepository userRepository;
  /* 회원가입로직*/
-
 
     @Transactional
     public Long signUp(SignUpRequest request) {
@@ -31,12 +30,21 @@ public class MemberServcie {
             request.getPassword(),
             request.getName(),
             Role.USER
-
     );
-
-        //포스그레 저장
+        //포스트그레 저장
         User savedUser = userRepository.save(user);
         return savedUser.getId();
-
     }
+
+    public void deleteUser(Long Userid){
+        if( userRepository.existsById(Userid)){
+
+            throw  new IllegalArgumentException("User already exists, 존재 하지않는 회원입니다"+Userid);
+
+        }
+        userRepository.deleteById(Userid);
+    }
+
+
+
 }
