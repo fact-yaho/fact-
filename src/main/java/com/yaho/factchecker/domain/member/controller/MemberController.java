@@ -20,7 +20,7 @@ public class MemberController {
     private final MemberServcie memberServcie;
 
     //회원가입 api
-    @PostMapping("/singup")
+    @PostMapping("/signup")
     public ResponseEntity<String> signup(@RequestBody SignUpRequest request){
         Long userId =memberServcie.signUp(request);
         return ResponseEntity.ok("회원가입  완료" + userId);
