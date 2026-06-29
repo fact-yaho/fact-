@@ -36,6 +36,7 @@ public class UserServcie {
         return savedUser.getId();
     }
 
+        // 회원 삭제 로직
     public void deleteUser(Long Userid){
         if( userRepository.existsById(Userid)){
 
@@ -43,6 +44,14 @@ public class UserServcie {
 
         }
         userRepository.deleteById(Userid);
+    }
+//  이메일 중복 체크
+    public boolean checkEmailDuplicate(String email) {
+        return userRepository.existsByEmail(email);
+    }
+//  닉네임 중복 체크
+    public boolean checkNicknameDuplicate(String nickname) {
+        return userRepository .existsByNickname(nickname);
     }
 
 

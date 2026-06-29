@@ -18,11 +18,12 @@ public class SecurityConfig {
 
                 //
                 .authorizeHttpRequests(auth -> auth
-                        // 회원가입 주소는 인증 없이 누구나 들어올 수 있도록 완전히 열어줍니다!
-                        // (컨트롤러의 오타 버전 /singup과 정석 /signup 둘 다 등록해 둘게요)
-                        .requestMatchers("/api/v1/members/signup").permitAll()
 
-                        // 그 외의 나머지 모든 API는 로그인이 필요하도록 막아둡니다.
+                        .requestMatchers("/api/v1/users/signup").permitAll()//회원가입
+                        .requestMatchers("/api/v1/users/check-email").permitAll()//이메일체크
+                        .requestMatchers("/api/v1/users/check-nickname").permitAll()//닉네임체크
+                        .requestMatchers("/api/v1/users/{userId}").permitAll()//삭제
+
                         .anyRequest().authenticated()
                 );
 
