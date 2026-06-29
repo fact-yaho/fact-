@@ -1,6 +1,6 @@
 package com.yaho.factchecker.domain.retrieval.entity;
 
-import com.yaho.factchecker.domain.ai.type.ClaimCategory;
+import com.yaho.factchecker.global.type.ClaimCategory;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;

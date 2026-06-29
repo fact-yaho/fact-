@@ -1,6 +1,6 @@
 package com.yaho.factchecker.domain.ai.dto.response;
 
-import com.yaho.factchecker.domain.ai.type.Stance;
+import com.yaho.factchecker.global.type.Stance;
 import java.util.List;
 
 public record StanceAnalysisResponse(

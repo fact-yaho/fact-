@@ -13,13 +13,15 @@
 - 입력으로 제공된 claim과 evidences만 사용합니다.
 - 외부 지식을 임의로 추가하지 않습니다.
 - evidence에 없는 내용을 추측하지 않습니다.
-- retrievalRank는 검색 단계에서 계산된 참고 순위입니다. 숫자가 낮을수록 검색 관련도가 높습니다.
-- retrievalRank는 참고하되, stance는 반드시 claim과 evidence content의 의미 비교를 기준으로 판단합니다.
+- evidences 배열은 관련도 높은 순서로 정렬되어 있습니다.
+- 배열 앞쪽에 위치한 evidence를 우선 참고하되, stance는 반드시 claim과 evidence content의 의미 비교를 기준으로 판단합니다.
 - 응답 JSON에는 아래 형식에 정의된 필드만 포함합니다.
 - 정의되지 않은 추가 필드는 생성하지 않습니다.
 - 응답은 반드시 JSON 객체 하나만 반환합니다.
 - 마크다운 코드블록을 사용하지 않습니다.
 - 설명 문장, 주석, 추가 텍스트를 포함하지 않습니다.
+- evidenceDocumentId는 입력으로 제공된 UUID 값을 그대로 복사해서 응답합니다.
+- evidenceDocumentId에 임의의 텍스트나 새 ID를 생성하지 않습니다.
 
 stance는 다음 enum 값 중 하나만 사용합니다:
 - SUPPORTS: evidence가 claim을 뒷받침함
@@ -39,7 +41,7 @@ stance 판단 기준:
 
 representativeStance 결정 기준:
 - 직접적이고 구체적인 evidence의 stance를 우선합니다.
-- retrievalRank가 낮은 evidence를 참고하되, 내용상 관련성이 낮으면 우선하지 않습니다.
+- 배열 앞쪽에 위치한 evidence를 우선 참고하되, 내용상 관련성이 낮으면 우선하지 않습니다.
 - CONTRADICTS와 SUPPORTS가 함께 있으면 claim의 핵심 행위와 시점을 더 직접적으로 다루는 evidence를 우선합니다.
 - 대부분의 evidence가 판단하기 어렵다면 INSUFFICIENT를 반환합니다.
 - 대부분의 evidence가 무관하다면 IRRELEVANT를 반환합니다.
@@ -62,11 +64,10 @@ representativeStance 결정 기준:
   },
   "evidences": [
     {
-      "sourceDocumentId": "근거자료 ID",
+      "evidenceDocumentId": "550e8400-e29b-41d4-a716-446655440000",
       "title": "근거자료 제목",
       "content": "근거자료 본문",
-      "publishedAt": "2024-01-01",
-      "retrievalRank": 1
+      "publishedAt": "2024-01-01"
     }
   ]
 }
@@ -76,7 +77,7 @@ representativeStance 결정 기준:
   "canonicalClaim": "정제된 주장",
   "evidences": [
     {
-      "sourceDocumentId": "근거자료 ID",
+      "evidenceDocumentId": "550e8400-e29b-41d4-a716-446655440000",
       "stance": "CONTRADICTS",
       "reason": "근거자료에서는 대한민국과 A국의 외교관계가 유지된다고 설명하므로, 단교했다는 claim과 반대됩니다."
     }
