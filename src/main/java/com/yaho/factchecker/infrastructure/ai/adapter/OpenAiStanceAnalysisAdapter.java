@@ -5,6 +5,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yaho.factchecker.application.ai.port.StanceAnalysisPort;
 import com.yaho.factchecker.domain.ai.dto.request.StanceAnalysisRequest;
 import com.yaho.factchecker.domain.ai.dto.response.StanceAnalysisResponse;
+import com.yaho.factchecker.global.exception.BusinessException;
+import com.yaho.factchecker.global.exception.ErrorCode;
 import com.yaho.factchecker.infrastructure.ai.prompt.PromptLoader;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.openai.OpenAiChatOptions;
@@ -35,10 +37,18 @@ public class OpenAiStanceAnalysisAdapter implements StanceAnalysisPort {
     public StanceAnalysisResponse analyze(StanceAnalysisRequest request) {
         String systemPrompt = promptLoader.load("prompts/ai/stance-analysis-system.txt");
 
-        try {
-            String requestJson = objectMapper.writeValueAsString(request);
+        String requestJson;
 
-            String content = chatClient.prompt()
+        try {
+            requestJson = objectMapper.writeValueAsString(request);
+        } catch (JsonProcessingException e) {
+            throw new BusinessException(ErrorCode.AI_REQUEST_SERIALIZE_FAILED, e);
+        }
+
+        String content;
+
+        try {
+            content = chatClient.prompt()
                     .options(OpenAiChatOptions.builder()
                             .model(model)
                             .build())
@@ -46,14 +56,18 @@ public class OpenAiStanceAnalysisAdapter implements StanceAnalysisPort {
                     .user(requestJson)
                     .call()
                     .content();
+        } catch (Exception e) {
+            throw new BusinessException(ErrorCode.AI_API_CALL_FAILED, e);
+        }
 
-            if (content == null || content.isBlank()) {
-                throw new IllegalStateException("AI stance 분석 응답이 비어 있습니다.");
-            }
+        if (content == null || content.isBlank()) {
+            throw new BusinessException(ErrorCode.AI_EMPTY_RESPONSE);
+        }
 
+        try {
             return objectMapper.readValue(content, StanceAnalysisResponse.class);
         } catch (JsonProcessingException e) {
-            throw new IllegalStateException("AI stance 분석 요청/응답을 처리할 수 없습니다.", e);
+            throw new BusinessException(ErrorCode.AI_RESPONSE_PARSE_FAILED, e);
         }
     }
 }
