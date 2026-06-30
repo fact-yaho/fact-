@@ -1,6 +1,7 @@
 package com.yaho.factchecker.domain.member.service;
 
 
+import com.yaho.factchecker.domain.member.dto.request.LoginRequest;
 import com.yaho.factchecker.domain.member.dto.request.SignUpRequest;
 import com.yaho.factchecker.domain.member.entity.Role;
 import com.yaho.factchecker.domain.member.entity.User;
@@ -52,6 +53,22 @@ public class UserServcie {
 //  닉네임 중복 체크
     public boolean checkNicknameDuplicate(String nickname) {
         return userRepository .existsByNickname(nickname);
+    }
+
+// 로그인로직
+    public Long login(LoginRequest request) {
+
+        //이메일로 유저 조회
+        User user = userRepository.findByEmail(request.getEmail())
+                .orElseThrow(() -> new IllegalArgumentException("User not found with email: 이메일을 찾을수 없습니다 " + request.getEmail()));
+
+        //비밀번호 확인
+        if (!user.getPassword().equals(request.getPassword())) {
+            throw new IllegalArgumentException("Invalid password: 비밀번호가 일치하지 않습니다");
+
+        }
+        // 로그인 성공시 유저ID 반환
+        return user.getId();
     }
 
 
