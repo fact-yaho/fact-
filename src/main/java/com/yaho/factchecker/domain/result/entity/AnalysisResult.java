@@ -2,7 +2,7 @@ package com.yaho.factchecker.domain.result.entity;
 
 import com.yaho.factchecker.domain.result.code.AnalysisStatus;
 import com.yaho.factchecker.global.type.InputType;
-import com.yaho.factchecker.domain.result.code.Verdict;
+import com.yaho.factchecker.global.type.Verdict;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -19,7 +19,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.SQLDelete;
-import org.hibernate.annotations.SQLRestriction;
 import org.hibernate.annotations.UuidGenerator;
 
 @Getter
