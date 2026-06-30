@@ -35,13 +35,14 @@ public class DocumentFact {
     @Column(name = "fact_text", columnDefinition = "TEXT")
     private String factText;
 
-    @JdbcTypeCode(SqlTypes.OTHER)
+
+    @JdbcTypeCode(SqlTypes.VECTOR)
     // 만약 모델 차원 변경 시 vector(1536) 값 변경 필요
     @Column(name = "fact_vector", columnDefinition = "vector(1536)")
-    private PGvector factVector;
+    private float[] factVector;
 
     @Builder
-    public DocumentFact(EvidenceDocument evidenceDocument, String factText, PGvector factVector) {
+    public DocumentFact(EvidenceDocument evidenceDocument, String factText, float[] factVector) {
         this.evidenceDocument = evidenceDocument;
         this.factText = factText;
         this.factVector = factVector;

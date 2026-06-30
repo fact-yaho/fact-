@@ -38,12 +38,12 @@ public class ClaimEmbedding {
     @Column(name = "claim_text", columnDefinition = "TEXT")
     private String claimText;
 
-    @JdbcTypeCode(SqlTypes.OTHER)
+    @JdbcTypeCode(SqlTypes.VECTOR)
     @Column(name = "claim_vector", columnDefinition = "vector(1536)")
-    private PGvector claimVector;
+    private float[] claimVector;
 
     @Builder
-    public ClaimEmbedding(Category category, UUID claimId, String claimText, PGvector claimVector) {
+    public ClaimEmbedding(Category category, UUID claimId, String claimText, float[] claimVector) {
         this.category = category;
         this.claimId = claimId;
         this.claimText = claimText;
