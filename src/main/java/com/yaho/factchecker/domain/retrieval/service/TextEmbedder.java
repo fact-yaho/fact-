@@ -14,6 +14,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class TextEmbedder {
 
+    private static final int EMBEDDING_DIMENSION = 1536;
+
     private final EmbeddingModel embeddingModel;
     private final String model;
 
@@ -37,20 +39,20 @@ public class TextEmbedder {
         if (text == null || text.isBlank()) {
             throw new BusinessException(ErrorCode.AI_EMPTY_RESPONSE);
         }
-
         try {
             EmbeddingRequest request = new EmbeddingRequest(
                     List.of(text),
-                    // 사용할 모델 지정
-                    OpenAiEmbeddingOptions.builder()
-                            .model(model)
-                            .build()
-            );
-            // API 호출된 결과에서 첫번째 결과 (float[])를 반환
-            return embeddingModel.call(request)
-                    .getResults()
-                    .get(0)
-                    .getOutput();
+                    OpenAiEmbeddingOptions.builder().model(model).build());
+
+            // API 호출된 결과에서 첫번째 결과(=float[])를 가져옴
+            float[] output = embeddingModel.call(request).getResults().get(0).getOutput();
+
+            if (output.length != EMBEDDING_DIMENSION) {
+                log.error("임베딩 차원 불일치: expected={}, actual={} (model={})",
+                        EMBEDDING_DIMENSION, output.length, model);
+                throw new BusinessException(ErrorCode.AI_API_CALL_FAILED);
+            }
+            return output;
         } catch (BusinessException e) {
             throw e;
         } catch (Exception e) {
