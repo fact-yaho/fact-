@@ -1,8 +1,8 @@
 package com.yaho.factchecker.domain.member.service;
 
-
 import com.yaho.factchecker.domain.member.dto.request.LoginRequest;
 import com.yaho.factchecker.domain.member.dto.request.SignUpRequest;
+import com.yaho.factchecker.domain.member.dto.response.MyPageResponse; // ✨ 추가
 import com.yaho.factchecker.domain.member.entity.Role;
 import com.yaho.factchecker.domain.member.entity.User;
 import com.yaho.factchecker.domain.member.repository.UserRepository;
@@ -13,64 +13,70 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 @Transactional
-
 public class UserServcie {
 
     private final UserRepository userRepository;
- /* 회원가입로직*/
 
+    /* 1. 회원가입 로직 */
     @Transactional
     public Long signUp(SignUpRequest request) {
-        //  이메일 중복 가입 확인
-        if( userRepository.existsByEmail(request.getEmail())){
-            throw  new IllegalArgumentException("Email already exists");
+        // 이메일 중복 가입 확인
+        if (userRepository.existsByEmail(request.getEmail())) {
+            throw new IllegalArgumentException("Email already exists");
         }
-    // 새로운 유저 엔티티 생성 기본값 유저
-    User user = new User(
-            request.getEmail(),
-            request.getPassword(),
-            request.getName(),
-            Role.USER
-    );
-        //포스트그레 저장
+        // 새로운 유저 엔티티 생성 기본값 유저
+        User user = new User(
+                request.getEmail(),
+                request.getPassword(),
+                request.getName(),
+                Role.USER
+        );
+        // 포스트그레 저장
         User savedUser = userRepository.save(user);
         return savedUser.getId();
     }
 
-        // 회원 삭제 로직
-    public void deleteUser(Long Userid){
-        if( userRepository.existsById(Userid)){
-
-            throw  new IllegalArgumentException("User already exists, 존재 하지않는 회원입니다"+Userid);
-
+    /* 2. 회원 삭제 로직 */
+    @Transactional
+    public void deleteUser(Long userId) {
+        //  존재하지 '않는' 경우(! 붙임) 에러를 던지도록 정상화
+        if (!userRepository.existsById(userId)) {
+            throw new IllegalArgumentException("존재하지 않는 회원입니다. ID: " + userId);
         }
-        userRepository.deleteById(Userid);
+        userRepository.deleteById(userId);
     }
-//  이메일 중복 체크
+
+    /* 3. 이메일 중복 체크 */
     public boolean checkEmailDuplicate(String email) {
         return userRepository.existsByEmail(email);
     }
-//  닉네임 중복 체크
+
+    /* 4. 닉네임 중복 체크 */
     public boolean checkNicknameDuplicate(String nickname) {
-        return userRepository .existsByNickname(nickname);
+        return userRepository.existsByNickname(nickname);
     }
 
-// 로그인로직
+    /* 5. 로그인 로직 */
     public Long login(LoginRequest request) {
-
-        //이메일로 유저 조회
+        // 이메일로 유저 조회
         User user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new IllegalArgumentException("User not found with email: 이메일을 찾을수 없습니다 " + request.getEmail()));
 
-        //비밀번호 확인
+        // 비밀번호 확인
         if (!user.getPassword().equals(request.getPassword())) {
             throw new IllegalArgumentException("Invalid password: 비밀번호가 일치하지 않습니다");
-
         }
         // 로그인 성공시 유저ID 반환
         return user.getId();
     }
 
+    /* 6. 마이페이지 조회 로직 ✨ (새로 추가됨) */
+    public MyPageResponse getMyPage(Long userId) {
+        // 유저가 진짜 있는지 조회하고 가져오기
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다. ID: " + userId));
 
-
+        // 엔티티를  반환
+        return new MyPageResponse(user);
+    }
 }

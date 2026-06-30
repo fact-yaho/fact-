@@ -2,6 +2,7 @@ package com.yaho.factchecker.domain.member.controller;
 
 
 import com.yaho.factchecker.domain.member.dto.request.SignUpRequest;
+import com.yaho.factchecker.domain.member.dto.response.MyPageResponse;
 import com.yaho.factchecker.domain.member.service.UserServcie;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -54,6 +55,13 @@ public class UserController {
         return ResponseEntity.ok("사용 가능한 닉네임입니다.");
     }
 
+    //5. 마이페이지 api 추가
+    @PostMapping("/me")
+    public ResponseEntity<MyPageResponse>getMyPage(@RequestParam(name = "userId") Long userId) {
 
+        MyPageResponse response = userServcie.getMyPage(userId);
+
+        return ResponseEntity.ok(response);
+    }
 
 }
