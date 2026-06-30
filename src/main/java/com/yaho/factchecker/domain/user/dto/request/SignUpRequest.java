@@ -1,4 +1,4 @@
-package com.yaho.factchecker.domain.member.dto.request;
+package com.yaho.factchecker.domain.user.dto.request;
 
 public class SignUpRequest {
 

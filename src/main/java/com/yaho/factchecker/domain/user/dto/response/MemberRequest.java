@@ -1,4 +1,4 @@
-package com.yaho.factchecker.domain.member.dto.response;
+package com.yaho.factchecker.domain.user.dto.response;
 
 
 import lombok.Getter;

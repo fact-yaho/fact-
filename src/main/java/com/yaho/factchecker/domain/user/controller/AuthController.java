@@ -1,7 +1,7 @@
-package com.yaho.factchecker.domain.member.controller;
+package com.yaho.factchecker.domain.user.controller;
 
-import com.yaho.factchecker.domain.member.dto.request.LoginRequest;
-import com.yaho.factchecker.domain.member.service.UserServcie;
+import com.yaho.factchecker.domain.user.dto.request.LoginRequest;
+import com.yaho.factchecker.domain.user.service.UserService;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequiredArgsConstructor
 public class AuthController {
 
-    private final UserServcie userService;
+    private final UserService userService;
 
 
     @PostMapping("/login")

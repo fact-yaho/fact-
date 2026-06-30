@@ -22,8 +22,6 @@ public class SecurityConfig {
                         .requestMatchers("/api/v1/users/signup").permitAll()//회원가입
                         .requestMatchers("/api/v1/users/check-email").permitAll()//이메일체크
                         .requestMatchers("/api/v1/users/check-nickname").permitAll()//닉네임체크
-                        .requestMatchers("/api/v1/users/{userId}").permitAll()//삭제
-
                         .anyRequest().authenticated()
                 );
 

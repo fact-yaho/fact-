@@ -1,5 +1,5 @@
-package com.yaho.factchecker.domain.member.dto.response;
-import com.yaho.factchecker.domain.member.entity.User;
+package com.yaho.factchecker.domain.user.dto.response;
+import com.yaho.factchecker.domain.user.entity.User;
 import lombok.Getter;
 
 @Getter

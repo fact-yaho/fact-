@@ -1,4 +1,4 @@
-package com.yaho.factchecker.domain.member.entity;
+package com.yaho.factchecker.domain.user.entity;
 
 
 import jakarta.persistence.*;

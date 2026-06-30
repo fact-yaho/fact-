@@ -1,6 +1,6 @@
-package com.yaho.factchecker.domain.member.repository;
+package com.yaho.factchecker.domain.user.repository;
 
-import com.yaho.factchecker.domain.member.entity.User;
+import com.yaho.factchecker.domain.user.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.Optional;
 

@@ -1,11 +1,11 @@
-package com.yaho.factchecker.domain.member.service;
+package com.yaho.factchecker.domain.user.service;
 
-import com.yaho.factchecker.domain.member.dto.request.LoginRequest;
-import com.yaho.factchecker.domain.member.dto.request.SignUpRequest;
-import com.yaho.factchecker.domain.member.dto.response.MyPageResponse; // ✨ 추가
-import com.yaho.factchecker.domain.member.entity.Role;
-import com.yaho.factchecker.domain.member.entity.User;
-import com.yaho.factchecker.domain.member.repository.UserRepository;
+import com.yaho.factchecker.domain.user.dto.request.LoginRequest;
+import com.yaho.factchecker.domain.user.dto.request.SignUpRequest;
+import com.yaho.factchecker.domain.user.dto.response.MyPageResponse; // ✨ 추가
+import com.yaho.factchecker.domain.user.entity.Role;
+import com.yaho.factchecker.domain.user.entity.User;
+import com.yaho.factchecker.domain.user.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 @Transactional
-public class UserServcie {
+public class UserService {
 
     private final UserRepository userRepository;
 
@@ -38,12 +38,13 @@ public class UserServcie {
 
     /* 2. 회원 삭제 로직 */
     @Transactional
-    public void deleteUser(Long userId) {
-        //  존재하지 '않는' 경우(! 붙임) 에러를 던지도록 정상화
-        if (!userRepository.existsById(userId)) {
-            throw new IllegalArgumentException("존재하지 않는 회원입니다. ID: " + userId);
-        }
-        userRepository.deleteById(userId);
+    public void deleteUser(String email) {
+        // 1. 이메일로 유저가 존재하는지 먼저 확인 겸 엔티티 가져오기
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다. 이메일: " + email));
+
+        // 2. 찾아온 유저의 진짜 고유 ID로 확실하게 삭제 진행
+        userRepository.deleteById(user.getId());
     }
 
     /* 3. 이메일 중복 체크 */
