@@ -8,6 +8,7 @@ import com.yaho.factchecker.domain.retrieval.entity.EvidenceDocument;
 import com.yaho.factchecker.domain.retrieval.entity.RerankResult;
 import com.yaho.factchecker.domain.retrieval.repository.EvidenceDocumentRepository;
 import com.yaho.factchecker.domain.retrieval.repository.RerankResultRepository;
+import com.yaho.factchecker.global.util.VectorUtils;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -35,6 +36,7 @@ public class RetrievalService {
 
     private final EvidenceDocumentRepository evidenceDocumentRepository;
     private final RerankResultRepository rerankResultRepository;
+    private final TextEmbedder textEmbedder;
     private final VectorScorer vectorScorer;
     private final Bm25Scorer bm25Scorer;
     private final RrfFusion rrfFusion;
@@ -114,13 +116,13 @@ public class RetrievalService {
     //     // category → category_api 로 호출 대상 API 결정 → 호출 → 정제 → evidence_document 저장
     // }
 
-    // [4단계] 소주장 텍스트를 임베딩하여 pgvector 리터럴 문자열로 반환. TODO: OpenAI 임베딩 모듈 연결
+    // [4단계] 소주장 텍스트를 임베딩하여 pgvector 리터럴 문자열로 반환
     private String embedClaim(String canonicalClaim) {
-        // TODO: OpenAI 임베딩 호출 → float[] → VectorUtils.toVectorLiteral(...)
-        return ""; // 현재 구현이 안되어 ""로 반환
+        float[] vector = textEmbedder.embed(canonicalClaim);
+        return VectorUtils.toVectorLiteral(vector);
     }
 
-    // [5단계]
+    // [5단계] BM25 + 벡터 점수 + RRF
     private List<RerankRow> rerank(UUID claimId, String claimText, String queryVector) {
         // [5-1단계] 후보 근거문서 조회 (한 소주장이 수집한 문서들)
         List<EvidenceDocument> candidates = evidenceDocumentRepository.findAllByClaimId(claimId);
