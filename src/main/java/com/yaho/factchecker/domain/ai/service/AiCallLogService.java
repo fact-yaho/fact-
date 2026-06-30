@@ -6,8 +6,10 @@ import com.yaho.factchecker.domain.ai.entity.AiCallLog;
 import com.yaho.factchecker.domain.ai.repository.AiCallLogRepository;
 import com.yaho.factchecker.domain.ai.type.AiCallStatus;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class AiCallLogService {
@@ -15,7 +17,7 @@ public class AiCallLogService {
     private final AiCallLogRepository aiCallLogRepository;
 
     public void saveSuccess(AiCallLogSuccessCommand command) {
-        AiCallLog log = AiCallLog.builder()
+        AiCallLog aiCallLog = AiCallLog.builder()
                 .callType(command.callType())
                 .modelName(command.modelName())
                 .promptPath(command.promptPath())
@@ -26,11 +28,15 @@ public class AiCallLogService {
                 .latencyMs(command.latencyMs())
                 .build();
 
-        aiCallLogRepository.save(log);
+        try {
+            aiCallLogRepository.save(aiCallLog);
+        } catch (Exception e) {
+            log.warn("AI 호출 로그 저장 실패", e);
+        }
     }
 
     public void saveFailure(AiCallLogFailureCommand command) {
-        AiCallLog log = AiCallLog.builder()
+        AiCallLog aiCallLog = AiCallLog.builder()
                 .callType(command.callType())
                 .modelName(command.modelName())
                 .promptPath(command.promptPath())
@@ -43,6 +49,10 @@ public class AiCallLogService {
                 .latencyMs(command.latencyMs())
                 .build();
 
-        aiCallLogRepository.save(log);
+        try {
+            aiCallLogRepository.save(aiCallLog);
+        } catch (Exception e) {
+            log.warn("AI 호출 로그 저장 실패", e);
+        }
     }
 }
