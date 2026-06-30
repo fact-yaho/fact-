@@ -52,7 +52,7 @@ public class UserController {
         if (isDuplicate) {
             return ResponseEntity.badRequest().body("이미 존재하는 닉네임입니다.");
         }
-        return ResponseEntity.ok("사용 가능한 닉네임입니다.");
+        return ResponseEntity.ok("사용 가능한 닉네임입니다!.");
     }
 
     //5. 마이페이지 api 추가
