@@ -5,6 +5,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yaho.factchecker.application.ai.port.ClaimAnalysisPort;
 import com.yaho.factchecker.domain.ai.dto.request.ClaimAnalysisRequest;
 import com.yaho.factchecker.domain.ai.dto.response.ClaimAnalysisResponse;
+import com.yaho.factchecker.global.exception.BusinessException;
+import com.yaho.factchecker.global.exception.ErrorCode;
 import com.yaho.factchecker.infrastructure.ai.prompt.PromptLoader;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.openai.OpenAiChatOptions;
@@ -35,25 +37,30 @@ public class OpenAiClaimAnalysisAdapter implements ClaimAnalysisPort {
     public ClaimAnalysisResponse analyze(ClaimAnalysisRequest request) {
         String systemPrompt = promptLoader.load("prompts/ai/claim-analysis-system.txt");
 
-        String content = chatClient.prompt()
-                .options(OpenAiChatOptions.builder()
-                        .model(model)
-                        .build())
-                .system(systemPrompt)
-                .user(request.input())
-                .call()
-                .content();
+        String content;
+
+        try {
+            content = chatClient.prompt()
+                    .options(OpenAiChatOptions.builder()
+                            .model(model)
+                            .build())
+                    .system(systemPrompt)
+                    .user(request.input())
+                    .call()
+                    .content();
+        } catch (Exception e) {
+            throw new BusinessException(ErrorCode.AI_API_CALL_FAILED, e);
+        }
 
         if (content == null || content.isBlank()) {
-            throw new IllegalStateException("AI claim 분석 응답이 비어 있습니다.");
+            throw new BusinessException(ErrorCode.AI_EMPTY_RESPONSE);
         }
 
         try {
             return objectMapper.readValue(content, ClaimAnalysisResponse.class);
         } catch (JsonProcessingException e) {
-            throw new IllegalStateException("AI claim 분석 응답을 파싱할 수 없습니다.", e);
+            throw new BusinessException(ErrorCode.AI_RESPONSE_PARSE_FAILED, e);
         }
 
     }
-
 }
