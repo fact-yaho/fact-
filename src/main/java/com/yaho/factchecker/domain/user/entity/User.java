@@ -1,4 +1,4 @@
-package com.yaho.factchecker.domain.member.entity;
+package com.yaho.factchecker.domain.user.entity;
 
 
 import jakarta.persistence.*;
@@ -28,12 +28,17 @@ public class User {
     @Column(nullable = false, length = 50)
     private Role role;
 
-    public  User(String email, String password, String name, Role role) {
+    @Column(nullable = false,length = 50, unique = true)
+    private String nickname;
+
+
+    public  User(String email, String password, String name, Role role, String nickname) {
 
         this.email = email;
         this.password = password;
         this.name = name;
         this.role = role;
+        this.nickname = nickname;
 
 
 

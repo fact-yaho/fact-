@@ -1,10 +1,11 @@
-package com.yaho.factchecker.domain.member.dto.request;
+package com.yaho.factchecker.domain.user.dto.request;
 
 public class SignUpRequest {
 
     private String email;
     private String password;
     private String name;
+    private String nickname;
 
 
 
@@ -13,10 +14,12 @@ public class SignUpRequest {
     public SignUpRequest() {}
 
     public String getEmail() {
+
         return email;
     }
 
     public String getPassword() {
+
         return password;
     }
 
@@ -24,5 +27,8 @@ public class SignUpRequest {
         return name;
     }
 
+    public String getNickname() {
+        return nickname;
+    }
 }
 
