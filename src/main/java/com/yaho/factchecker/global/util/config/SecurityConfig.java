@@ -23,7 +23,11 @@ public class SecurityConfig {
                 // api 접근권한
                 .authorizeHttpRequests(auth -> auth
 
-                        .requestMatchers("/api/v1/users/signup","/api/v1/users/login").permitAll()
+                        // 회원가입과 닉네임    중복체크는 인증없이 접근 가능하도록 설정
+                        .requestMatchers("/api/v1/users/signup","/api/v1/users/check-nickname").permitAll()
+                        //실제 로그인
+                        .requestMatchers("/api/v1/auth/login").permitAll()
+                        //그외 다른것들은 토큰필요
                         .anyRequest().authenticated()
                 )
 

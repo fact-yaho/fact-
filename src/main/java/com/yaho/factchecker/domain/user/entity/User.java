@@ -28,7 +28,7 @@ public class User {
     @Column(nullable = false, length = 50)
     private Role role;
 
-    @Column(nullable = false,length = 50)
+    @Column(nullable = false,length = 50, unique = true)
     private String nickname;
 
 
