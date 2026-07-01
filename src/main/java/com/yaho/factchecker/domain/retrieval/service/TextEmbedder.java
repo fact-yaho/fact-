@@ -48,7 +48,7 @@ public class TextEmbedder {
             float[] output = embeddingModel.call(request).getResults().get(0).getOutput();
 
             if (output.length != EMBEDDING_DIMENSION) {
-                log.error("임베딩 차원 불일치: expected={}, actual={} (model={})",
+                log.error("임베딩 차원 불일치: expected={}, actual={}, model={}",
                         EMBEDDING_DIMENSION, output.length, model);
                 throw new BusinessException(ErrorCode.AI_API_CALL_FAILED);
             }

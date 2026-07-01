@@ -66,6 +66,8 @@ public class Bm25Scorer {
         }
     }
 
+
+
     // 각 문서들에 대한 인메모리 인덱스 구축 ("title + content_cleaned"에 대한 색인)
     private void indexDocuments(Directory directory, Analyzer analyzer,
                                 List<EvidenceDocument> documents) throws Exception
@@ -91,6 +93,7 @@ public class Bm25Scorer {
             }
         }
     }
+
 
     // 소주장에 대해 구축한 인덱스(indexDocuments)로 점수/순위를 평가
     private List<Bm25Result> search(Directory directory, Analyzer analyzer,
@@ -132,14 +135,40 @@ public class Bm25Scorer {
 
             // 최종 점수 내림차순으로 정렬 후 rank 부여
             results.sort((a, b) -> Double.compare(b.score(), a.score()));
+
+            // 후보 배치 내 min-max 정규화용 최소/최대 (정렬됐으니 첫째=max, 마지막=min)
+            double max = results.get(0).score();
+            double min = results.get(results.size() - 1).score();
+
             List<Bm25Result> ranked = new ArrayList<>(results.size());
             for (int i = 0; i < results.size(); ++i) {
                 Bm25Result r = results.get(i);
-                ranked.add(new Bm25Result(r.evidenceDocumentId(), r.score(), i + 1));
+                // BM25 원점을 0~1로 정규화한 값을 score로 저장 (rank는 정렬 순서 그대로라 RRF에 영향 없음)
+                double normalized = normalizeScore(r.score(), min, max);
+                ranked.add(new Bm25Result(r.evidenceDocumentId(), normalized, i + 1));
             }
             return ranked;
         }
     }
+
+
+    /* BM25 정규화
+     *  max == 0 -> 전부 0.0 (아무 문서도 키워드 매칭 안 됨 = 관련도 0)
+     *  max == min (>0) -> 전부 1.0 (모두 동일하게, 유의미하게 관련)
+     *  그 외 -> (score - min) / (max - min)
+     */
+    private double normalizeScore(double score, double min, double max)
+    {
+        // max == 0 이면 전부 0점이므로 max == min 검사보다 먼저 처리
+        if (max == 0.0) {
+            return 0.0;
+        }
+        if (max == min) {
+            return 1.0;
+        }
+        return (score - min) / (max - min);
+    }
+
 
     // title과 content를 합쳐서 하나의 문장으로 생성
     private String buildText(EvidenceDocument doc)

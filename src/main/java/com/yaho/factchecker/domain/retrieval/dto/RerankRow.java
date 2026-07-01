@@ -9,6 +9,7 @@ import java.util.UUID;
  * bm25Rank = BM25 순위
  * vectorScore = 벡터 유사도 점수
  * vectorRank = 벡터 순위
+ * finalScore = RRF 점수
  * finalRank = RRF 융합 최종 순위 (1부터)
  */
 public record RerankRow(
@@ -17,5 +18,7 @@ public record RerankRow(
         int bm25Rank,
         double vectorScore,
         int vectorRank,
+        double finalScore,
         int finalRank
 ) {}
+
