@@ -1,5 +1,7 @@
 package com.yaho.factchecker.infrastructure.ai.prompt;
 
+import com.yaho.factchecker.global.exception.BusinessException;
+import com.yaho.factchecker.global.exception.ErrorCode;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +20,7 @@ public class PromptLoader {
             Resource resource = resourceLoader.getResource("classpath:" + path);
             return resource.getContentAsString(StandardCharsets.UTF_8);
         } catch (IOException e) {
-            throw new IllegalStateException("프롬프트 파일을 읽을 수 없습니다: " + path, e);
+            throw new BusinessException(ErrorCode.AI_PROMPT_LOAD_FAILED, e);
         }
     }
 }

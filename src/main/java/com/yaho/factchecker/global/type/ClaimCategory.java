@@ -1,5 +1,10 @@
-package com.yaho.factchecker.domain.ai.type;
+package com.yaho.factchecker.global.type;
 
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+
+@Getter
+@RequiredArgsConstructor
 public enum ClaimCategory {
     BILATERAL_RELATIONS("양자관계"),
     NORTH_KOREA_RELATIONS("대북관계"),
@@ -13,11 +18,4 @@ public enum ClaimCategory {
 
     private final String label;
 
-    ClaimCategory(String label) {
-        this.label = label;
-    }
-
-    public String getLabel() {
-        return label;
-    }
 }
