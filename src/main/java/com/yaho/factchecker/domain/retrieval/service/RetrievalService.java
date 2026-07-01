@@ -3,6 +3,7 @@ package com.yaho.factchecker.domain.retrieval.service;
 import com.yaho.factchecker.domain.retrieval.dto.Bm25Result;
 import com.yaho.factchecker.domain.retrieval.dto.ClaimRetrievalRequest;
 import com.yaho.factchecker.domain.retrieval.dto.RerankRow;
+import com.yaho.factchecker.domain.retrieval.dto.RetrievedEvidence;
 import com.yaho.factchecker.domain.retrieval.dto.VectorResult;
 import com.yaho.factchecker.domain.retrieval.entity.EvidenceDocument;
 import com.yaho.factchecker.domain.retrieval.entity.RerankResult;
@@ -48,20 +49,20 @@ public class RetrievalService {
     private static final Duration CACHE_TTL = Duration.ofHours(24);
 
     /*
-    * [retrieveEviden() 메서드 설명]
-    *
-    * 소주장 1개에 대한 상위 근거문서 K개를 얻도록 하는 공개 진입점, 오케스트레이터 역할
-    *
-    * claim-analysis에 의해 추출된 정제된 소주장 별로 ClaimRetrievalRequest DTO 형태로
-    * 넘기면 해당 소주장에 대한 상위 K개의 문서를 List<EvidenceDocuemtn> 형태로 제공한다
-    *
-    * request = Calim-analysis 및 LLM 분석 결과로 얻은 소주장 1개에 대한 정보
-    *
-    * 최종 반환 값 = 상위 K개의 근거문서 (순위 오름차순), 검증 불가/결과 없으면 빈 리스트를 반환
-    * */
+     * [retrieveEvidence() 메서드 설명]
+     *
+     * 소주장 1개에 대한 상위 근거문서 K개를 얻도록 하는 공개 진입점, 오케스트레이터 역할
+     *
+     * claim-analysis에 의해 추출된 정제된 소주장 별로 ClaimRetrievalRequest DTO 형태로
+     * 넘기면 해당 소주장에 대한 상위 K개의 문서를 List<RetrievedEvidence> 형태로 제공
+     *
+     * request = Claim-analysis 및 LLM 분석 결과로 얻은 소주장 1개에 대한 정보
+     *
+     * 최종 반환 값 = 상위 K개의 근거문서 + 점수/순위 (순위 오름차순), 검증 불가/결과 없으면 빈 리스트를 반환
+     * */
 
     @Transactional
-    public List<EvidenceDocument> retrieveEvidence(ClaimRetrievalRequest request) {
+    public List<RetrievedEvidence> retrieveEvidence(ClaimRetrievalRequest request) {
         // [0단계] 검증 불가 소주장은 skip
         if (request == null || !request.isVerifiable()) {
             log.info("검증 불가 또는 빈 요청 → 근거검색 스킵. claimId={}",
@@ -170,6 +171,7 @@ public class RetrievalService {
                     .bm25Score(row.bm25Score())
                     .vectorSimRank(row.vectorRank())
                     .vectorSimScore(row.vectorScore())
+                    .finalScore(row.finalScore())
                     .finalRank(row.finalRank())
                     .build());
         }
@@ -177,7 +179,7 @@ public class RetrievalService {
     }
 
     // [7단계] Top-K 근거문서 반환
-    private List<EvidenceDocument> getTopKDocuments(UUID claimId) {
+    private List<RetrievedEvidence> getTopKDocuments(UUID claimId) {
         // final_rank 오름차순으로 rerank 결과 조회
         List<RerankResult> ranked = rerankResultRepository.findAllByClaimIdOrderByFinalRankAsc(claimId);
         if (ranked.isEmpty()) {
@@ -187,7 +189,29 @@ public class RetrievalService {
         // 상위 K개의 문서를 순위 순서대로 추출
         return ranked.stream()
                 .limit(TOP_K)
-                .map(RerankResult::getEvidenceDocument)
+                .map(this::toRetrievedEvidence)
                 .collect(Collectors.toList());
+    }
+
+    // 최종 반환 DTO 변환
+    private RetrievedEvidence toRetrievedEvidence(RerankResult r) {
+        EvidenceDocument doc = r.getEvidenceDocument();
+        return new RetrievedEvidence(
+                doc.getEvidenceDocumentId(),
+                doc.getTitle(),
+                doc.getContentCleaned(),
+                doc.getApiName(),
+                doc.getSearchKeyword(),
+                doc.getCategoryName(),
+                doc.getPublishedAt(),
+                doc.getOriginalUrl(),
+                doc.getAuthorOrDept(),
+                r.getBm25Score(),
+                r.getBm25Rank(),
+                r.getVectorSimScore(),
+                r.getVectorSimRank(),
+                r.getFinalScore(),
+                r.getFinalRank()
+        );
     }
 }

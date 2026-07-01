@@ -45,19 +45,23 @@ public class RerankResult {
     @Column(name = "vector_sim_score", nullable = false)
     private Double vectorSimScore;
 
+    @Column(name = "final_score", nullable = false)
+    private Double finalScore;
+
     @Column(name = "final_rank", nullable = false)
     private Integer finalRank;
 
     @Builder
     public RerankResult(UUID claimId, EvidenceDocument evidenceDocument, Integer bm25Rank,
                         Double bm25Score, Integer vectorSimRank, Double vectorSimScore,
-                        Integer finalRank) {
+                        Double finalScore, Integer finalRank) {
         this.claimId = claimId;
         this.evidenceDocument = evidenceDocument;
         this.bm25Rank = bm25Rank;
         this.bm25Score = bm25Score;
         this.vectorSimRank = vectorSimRank;
         this.vectorSimScore = vectorSimScore;
+        this.finalScore = finalScore;
         this.finalRank = finalRank;
     }
 }

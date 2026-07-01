@@ -52,9 +52,9 @@ public class RrfFusion {
             VectorResult vector = vectorMap.get(docId);
 
             /*
-            * RRF_score = 1/(k + bm25_rank) + 1/(k + vector_rank)
-            * 상단 공식의 bm25와 vector에 해당하는 부분에 대한 계산을 수행
-            * */
+             * RRF_score = 1/(k + bm25_rank) + 1/(k + vector_rank)
+             * 상단 공식의 bm25와 vector에 해당하는 부분에 대한 계산을 수행
+             * */
             double bm25Term = (bm25 != null) ? 1.0 / (k + bm25.rank()) : 0.0;
             double vectorTerm = (vector != null) ? 1.0 / (k + vector.rank()) : 0.0;
 
@@ -80,7 +80,8 @@ public class RrfFusion {
             Scored s = scoredList.get(i);
             ranked.add(new RerankRow(
                     s.docId(), s.bm25Score(), s.bm25Rank(),
-                    s.vectorScore(), s.vectorRank(), i + 1
+                    s.vectorScore(), s.vectorRank(),
+                    s.rrfScore(), i + 1
             ));
         }
         return ranked;
