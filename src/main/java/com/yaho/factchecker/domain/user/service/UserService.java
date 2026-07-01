@@ -2,12 +2,14 @@ package com.yaho.factchecker.domain.user.service;
 
 import com.yaho.factchecker.domain.user.dto.request.LoginRequest;
 import com.yaho.factchecker.domain.user.dto.request.SignUpRequest;
-import com.yaho.factchecker.domain.user.dto.response.MyPageResponse; // ✨ 추가
+import com.yaho.factchecker.domain.user.dto.response.MyPageResponse;
 import com.yaho.factchecker.domain.user.entity.Role;
 import com.yaho.factchecker.domain.user.entity.User;
 import com.yaho.factchecker.domain.user.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -16,24 +18,28 @@ import org.springframework.stereotype.Service;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
     /* 1. 회원가입 로직 */
     @Transactional
     public Long signUp(SignUpRequest request) {
-        // 이메일 중복 가입 확인
-        if (userRepository.existsByEmail(request.getEmail())) {
-            throw new IllegalArgumentException("Email already exists");
-        }
+
         // 새로운 유저 엔티티 생성 기본값 유저
         User user = new User(
                 request.getEmail(),
-                request.getPassword(),
+                passwordEncoder.encode(request.getPassword()), // 비밀번호 암호화
                 request.getName(),
-                Role.USER
+                Role.USER,
+                request.getNickname()
+
         );
-        // 포스트그레 저장
-        User savedUser = userRepository.save(user);
-        return savedUser.getId();
+        try {
+            User savedUser = userRepository.save(user);
+            return savedUser.getId();
+        }catch (DataIntegrityViolationException e){
+            throw new IllegalArgumentException("Email already exists : 이미 존재하는 이메일입니다"+request.getEmail());
+        }
+
     }
 
     /* 2. 회원 삭제 로직 */
@@ -64,14 +70,14 @@ public class UserService {
                 .orElseThrow(() -> new IllegalArgumentException("User not found with email: 이메일을 찾을수 없습니다 " + request.getEmail()));
 
         // 비밀번호 확인
-        if (!user.getPassword().equals(request.getPassword())) {
+        if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
             throw new IllegalArgumentException("Invalid password: 비밀번호가 일치하지 않습니다");
         }
         // 로그인 성공시 유저ID 반환
         return user.getId();
     }
 
-    /* 6. 마이페이지 조회 로직 ✨ (새로 추가됨) */
+    // 6. 마이페이지
     public MyPageResponse getMyPage(Long userId) {
         // 유저가 진짜 있는지 조회하고 가져오기
         User user = userRepository.findById(userId)

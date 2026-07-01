@@ -1,4 +1,4 @@
 package com.yaho.factchecker.domain.user.service;
 
-public class AuthServcie {
+public class AuthService {
 }
