@@ -63,6 +63,8 @@ public class Claim extends BaseEntity {
             boolean verifiable,
             String unverifiableReason
     ) {
+        validateVerifiability(verifiable, unverifiableReason);
+
         this.factCheckId = factCheckId;
         this.claimAnalysisAiLogId = claimAnalysisAiLogId;
         this.originalText = originalText;
@@ -75,5 +77,15 @@ public class Claim extends BaseEntity {
     public void addCategory(ClaimCategoryMapping categoryMapping) {
         this.categories.add(categoryMapping);
         categoryMapping.assignClaim(this);
+    }
+
+    private void validateVerifiability(boolean verifiable, String unverifiableReason) {
+        if (!verifiable && (unverifiableReason == null || unverifiableReason.isBlank())) {
+            throw new IllegalArgumentException("검증 불가능한 주장에는 검증 불가 사유가 필요합니다.");
+        }
+
+        if (verifiable && unverifiableReason != null && !unverifiableReason.isBlank()) {
+            throw new IllegalArgumentException("검증 가능한 주장에는 검증 불가 사유를 저장할 수 없습니다.");
+        }
     }
 }
