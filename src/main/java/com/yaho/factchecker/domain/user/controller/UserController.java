@@ -40,7 +40,6 @@ public class UserController {
     }
 
 
-
     // 3.이메일 중복체크
     @PostMapping("/check-email")
     public ResponseEntity<String> checkEmail(@RequestParam(name = "email") String email){
