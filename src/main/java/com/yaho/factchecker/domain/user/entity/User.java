@@ -2,6 +2,8 @@ package com.yaho.factchecker.domain.user.entity;
 
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -9,6 +11,8 @@ import lombok.NoArgsConstructor;
 @Table(name= "p_user")
 @Getter
 @NoArgsConstructor
+@AllArgsConstructor //
+@Builder //
 public class User {
 
     @Id
